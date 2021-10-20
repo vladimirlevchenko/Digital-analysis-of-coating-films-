@@ -125,3 +125,10 @@ Create black-and-white image
             imshow(img_cr_bw, "parent", app.UIAxes_ROI);
         end
 ```
+Example
+<p align="center">
+<img src="images/BW_example.png" width="400">
+  </p>
+<figcaption align = "center"> 
+  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+</figcaption>
