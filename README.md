@@ -27,8 +27,37 @@ SB - circle the defects using a marker.
 (figure of the marked SB drawdown)
 
 ## App
+
+The app's interface:
 <p align="center">
-<img src="app_interface.png" width="400">
+<img src="images/app_interface.png" width="400">
   </p>
-<figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
+<figcaption align = "center"> 
+  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
+
+## Code
+
+´´´
+% Image clicked function: Image
+        function ImageClicked(app, event)
+            global img;
+            global defect_area_perc_list;
+            global defect_area_pix_list;
+            global numerated_defects_list;
+
+            defect_area_perc_list = [];
+            defect_area_pix_list = [];
+            numerated_defects_list = [];
+
+            [a,b] = uigetfile({'*.*'});
+            if isequal(a, 0);
+                disp("No image selected");
+            else
+                img = imread([b,a]);
+                app.Image.ImageSource = img;
+            end
+        end
+´´´
+
+text here
