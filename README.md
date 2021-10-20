@@ -28,7 +28,7 @@ SB - circle the defects using a marker.
 
 ## App
 <p align="center">
-<img src="images/solvent_borne_example.jpeg" width="400">
+<img src="app_interface.png" width="400">
   </p>
 <figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
