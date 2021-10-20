@@ -38,8 +38,9 @@ The app's interface:
 
 ## Code
 
-´´´
-% Image clicked function: Image
+´´´ruby
+
+        % Image clicked function: Image
         function ImageClicked(app, event)
             global img;
             global defect_area_perc_list;
