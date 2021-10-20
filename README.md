@@ -3,7 +3,7 @@ This repository is created to introduce the digital solution to the drawdown ana
 
 ## Introduction
 
-When new paint or formulation is developed, it's properties have to be thoroughly investigated before the product could end up on the shop's shelf or customer's wall. One of the methods to assess the properties of the paint is called drawdown analysis. Now, depending on type of solvent that paint includes, there are two types of paints - solvent-borne and water-borne. 
+When new paint or formulation is developed, it's properties have to be thoroughly investigated before the product ends up on the shop's shelf or customer's wall. One of the methods to assess the properties of the paint is called drawdown analysis. Now, depending on type of solvent that paint includes, one can find two types of paints - solvent-borne and water-borne. 
 
 (Figure of SB and WB) 
 
