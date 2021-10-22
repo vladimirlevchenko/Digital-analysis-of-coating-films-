@@ -110,8 +110,8 @@ It is seldomly the whole uploaded picture that is going to be analyzed. In most 
              end
 ```
 
-To further analyze the croped region form the previous step, it has to be converted to the black-and-white (BW) image. Here I though to take down two flies on one smack - convert ot BW, smooth the edges of the defects and filter off the noisy pixels. Since the selected region is still a RGB image, it must be converted to the gray-scale image using an *rgb2gray* function. The contrast of the gray-scale image was enhanced by means of *adapthisteq* command. 
-The convertation itself is fairly simply and can be achieve using 
+To further analyze the croped region form the previous step, it has to be converted to the black-and-white (BW) image. Here I though to take down two flies on one smack - convert ot BW, smooth the edges of the defects and filter off the noisy pixels. Since the selected region is still a RGB image, it must be converted to the gray-scale image using an *rgb2gray* function. The contrast of the gray-scale image was enhanced by means of *adapthisteq* and *imadjust* functions. 
+The convertation to the BW image is fairly simple and was achieved by threshholding the intensity of the gray image using *changingValue*-variable. This variable was being read from the sliding bar. So by manually changing the sliding bar value, the "depth" of BW image can be scanned, revealing more or less defects depending on the needs.  
 
 ```Matlab
 % Value changing function: BWfilterSlider
@@ -123,7 +123,6 @@ The convertation itself is fairly simply and can be achieve using
           % Reads up the value from the slider
             changingValue = event.Value;
             img_gray = rgb2gray(img_croped);
-            img_adhist = adapthisteq(img_gray,'ClipLimit',0.005, 'Range', 'full');
             claheI = adapthisteq(img_gray,'ClipLimit',0.01);
             claheI = imadjust(claheI);
 
@@ -136,6 +135,15 @@ The convertation itself is fairly simply and can be achieve using
         end
 ```
 Example
+<p align="center">
+<img src="images/BW_example.png" width="400">
+  </p>
+<figcaption align = "center"> 
+  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+</figcaption>
+
+example 2
+
 <p align="center">
 <img src="images/BW_example.png" width="400">
   </p>
