@@ -79,7 +79,8 @@ To switch between different algorithms (and parameters) for SB and WB drawdowns,
         end
 ```
 
-Select region
+It is seldomly the whole uploaded picture that is going to be analyzed. In most cases, it is only a specific region that is of interest. The "Select region"-button was introduced so that user could select the region of interest (ROI) him/herself. ROI was selected using a *drawrectangle* function. After the rectangle has been placed, it's position was readed and the uploaded image was then croped with the constrains that the ROI implied.  
+
 ```Matlab
 % Button pushed function: SelectregionButton
         function SelectregionButtonPushed(app, event)
@@ -108,7 +109,10 @@ Select region
                  low_area_limit = 1;
              end
 ```
-Create black-and-white image
+
+To further analyze the croped region form the previous step, it has to be converted to the black-and-white (BW) image. Here I though to take down two flies on one smack - convert ot BW, smooth the edges of the defects and filter off the noisy pixels. Since the selected region is still a RGB image, it must be converted to the gray-scale image using an *rgb2gray* function. The contrast of the gray-scale image was enhanced by means of *adapthisteq* command. 
+The convertation itself is fairly simply and can be achieve using 
+
 ```Matlab
 % Value changing function: BWfilterSlider
         function BWfilterSliderValueChanging(app, event)
