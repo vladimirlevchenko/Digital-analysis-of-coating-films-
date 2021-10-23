@@ -114,7 +114,7 @@ To further analyze the croped region form the previous step, it has to be conver
 The convertation to the BW image is fairly simple and was achieved by threshholding the intensity of the gray image using *changingValue*-variable. This variable was being read from the sliding bar. So by manually changing the sliding bar value, the "depth" of BW image can be scanned, revealing more or less defects depending on the needs.  
 
 <p align="center">
-<img src="images/GIF_BWslider.gif" width="400">
+<img src="images/GIF_BWslider.gif" width="600">
   </p>
 <figcaption align = "center"> 
   <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
@@ -163,8 +163,8 @@ So the first thing that has to be done is to calculate the area of the whole dra
 Example
 <p align="center">
 <kbd>
-  <img src="images/defects_removal_1.png" width="400">
-  <img src="images/defects_removal_2.png" width="400">
+  <img src="images/defects_removal_1.png" width="300">
+  <img src="images/defects_removal_2.png" width="300">
 </kbd>
   </p>
 <figcaption align = "center"> 
@@ -172,7 +172,9 @@ Example
 </figcaption>
 
 To the left is a selected BW region that will be used for plotting the boundaries and to the right - the "non-defected" area, where the defects are filled with "white" pixels. The defects were filled using *strel* and *imclose* functions.
-The boundaries are traced using the *bwboundaries*-function, which takes in a BW image and outputs a list of found boundaries.
+The boundaries are traced using the *bwboundaries*-function, which takes in a BW image and outputs a list of found boundaries. The first for-loop creates lists of numbered defects (1,2,3...), boundaries (new_B_list), and areas in pixels and percentage. The second for-loop plots the boundaries with their corresponding numbers on the analyzed figure. There is a variable called *low_area_limit*, which is involved in the if-loop and will be discussed later.
+
+Finally, values from three created lists (numerated_defects_list, defect_area_pix_list, defect_area_perc_list) are used to create an UITable as well as update the text labels with the total sum of the defected area and number of defects.  
 
 ```Matlab
 % Button pushed function: CalculateboundariesButton
