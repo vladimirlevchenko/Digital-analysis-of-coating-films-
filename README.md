@@ -172,6 +172,7 @@ Example
 </figcaption>
 
 To the left is a selected BW region that will be used for plotting the boundaries and to the right - the "non-defected" area, where the defects are filled with "white" pixels. The defects were filled using *strel* and *imclose* functions.
+The boundaries are traced using the *bwboundaries*-function, which takes in a BW image and outputs a list of found boundaries.
 
 ```Matlab
 % Button pushed function: CalculateboundariesButton
