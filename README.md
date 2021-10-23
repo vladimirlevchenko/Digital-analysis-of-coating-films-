@@ -153,4 +153,102 @@ Example
 
 example 2
 
+Boundaries calculations
+When the defects are represented as BW image, we can draw the borders on the interface between white and black pixels. That would give us coordinates of each boundary associated with defects, which then could be converted to the area. The calculated area of each defect would then be divided on the area of the whole drawdown (or the selected region of interest), stored in the list as pixel and percentage area. The sum of area of each individual defect would give us then a total defectiveness of the drawdown, in percentage.
 
+![\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}](https://latex.codecogs.com/svg.latex?\Large&space;x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}) 
+
+These are so called boundaries are generated using *bwboundaries* function. 
+
+```Matlab
+% Button pushed function: CalculateboundariesButton
+        function CalculateboundariesButtonPushed(app, event)
+            global img_cr_bw;
+            global k_numbers_list;  
+            global numerated_defects_list;
+            global defect_area_perc_list;
+            global buttonText;
+            global img_temp;
+            global new_B_list;
+            global low_area_limit;
+            global defect_area_pix_list;
+        
+            defect_area_perc_list = [];
+            defect_area_pix_list = [];
+            numerated_defects_list = [];
+
+            app.UITable.Data = [];
+            disp(low_area_limit)
+            % Calculate the area of the whole drawdown. The defects are
+            % filled.
+            se = strel("disk", 50);
+            bw_4area = imclose(img_cr_bw, se);
+            figure, imshow(bw_4area);
+            drawdown_area = bwarea(bw_4area);
+     %       figure, imshow(img_cr_bw);
+
+            % Boundaries calculation
+            disp(buttonText)
+            if isequal(buttonText, 'water-borne');
+                formulation = 'holes'
+            else
+                formulation = 'noholes'
+            end
+            disp(formulation)
+
+            [B,L] = bwboundaries(img_cr_bw, formulation);
+            img_temp = label2rgb(L, @jet, [.0 .0 .0]);
+            imshow(img_temp);
+            hold on
+            k_numbers_list = {}; % create an empty list of numbers of boundaries to be used in BoxList. 
+      
+            all_defects_area_pix = 0;
+        
+            m = 0;
+            new_B_list = [];
+
+            for i = 1:length(B);
+                defect = B{i};
+                x = defect(:,2);
+                y = defect(:,1);
+                defect_area_pix = polyarea(x,y);
+                if defect_area_pix > low_area_limit;
+                    m = m + 1;
+                    defect_area_pix_list(end+1) = defect_area_pix;
+                    defect_area_perc = defect_area_pix / drawdown_area * 100;
+                    defect_area_perc_list(end+1) = defect_area_perc;
+                    all_defects_area_pix = all_defects_area_pix + defect_area_pix;
+                    numerated_defects_list(end+1) = string(m);
+                    %defect = B{m};
+                    new_B_list{end+1} = defect;
+                end
+            end
+
+            for k = 1:length(new_B_list);
+                boundary = new_B_list{k};
+                x = boundary(:, 2);     
+                y = boundary(:, 1);
+                plot(x, y, 'w', 'LineWidth', 3)
+                text(x(1), y(1), string(k), 'Color','r','FontSize',20);
+                k_numbers_list{end+1} = k;
+                disp(new_B_list{k})
+                disp(k_numbers_list{k})
+            end
+            disp(k_numbers_list)
+            imshow(img_temp, "parent", app.UIAxes2);
+
+            app.UITable.ColumnName = {'Number', 'Area, PIX','Area, %'}
+            app.UITable.ColumnWidth = {'auto'};
+            app.UITable.FontSize = 10;
+            for k = 1:length(numerated_defects_list);
+                app.UITable.Data = [app.UITable.Data; numerated_defects_list(k), defect_area_pix_list(k), defect_area_perc_list(k)];
+            end
+
+            defected_area_perc = sum(defect_area_perc_list);
+            % Display the calculated area
+            app.LabelArea.Text = string(round(defected_area_perc, 4));
+
+            % Update the number of defects label
+            app.Label2.Text = string(length(numerated_defects_list));
+        end
+```
