@@ -158,18 +158,20 @@ When the defects are represented as BW image, we can draw the borders on the int
 
 Single defect, % = defect's area (pix^2) / total area * 100
 
-So the first thing that has to be done is to calculate the area of the whole drawdown or the selected region. This is done using the *bwarea* function that calculates the area in the binary image (the "white" part in the BW image). But before we apply this function, we have to make sure that the defects are filled (in the BW image the defects are "black") and became "white". That would ensure that the defects are gone and the total area would be calculated as the "undefected" one.
-
-defects_removal_2
+So the first thing that has to be done is to calculate the area of the whole drawdown or the selected region. This is done using the *bwarea* function that calculates the area in the binary image (the "white" part in the BW image). But before we apply this function, we have to make sure that the defects are filled (in the BW image the defects are "black") and became "white". That would ensure that the defects are gone and the total area would be calculated as the "undefected" one. This is illustrated in the figures below:
 
 Example
 <p align="center">
-
-  <img src="images/defects_removal_2.png" width="300">
+<kbd>
+  <img src="images/defects_removal_1.png" width="400">
+  <img src="images/defects_removal_2.png" width="400">
+</kbd>
   </p>
 <figcaption align = "center"> 
   <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
+
+To the left is a selected BW region that will be used for plotting the boundaries and to the right - the "non-defected" area, where the defects are filled with "white" pixels. The defects were filled using *strel* and *imclose* functions.
 
 ```Matlab
 % Button pushed function: CalculateboundariesButton
