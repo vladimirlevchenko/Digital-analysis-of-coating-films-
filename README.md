@@ -176,6 +176,8 @@ The boundaries are traced using the *bwboundaries*-function, which takes in a BW
 
 Finally, values from three created lists (numerated_defects_list, defect_area_pix_list, defect_area_perc_list) are used to create an UITable as well as update the text labels with the total sum of the defected area and number of defects.  
 
+The complete code for the "Calculate"-button is attached below.
+
 ```Matlab
 % Button pushed function: CalculateboundariesButton
         function CalculateboundariesButtonPushed(app, event)
@@ -268,3 +270,13 @@ Finally, values from three created lists (numerated_defects_list, defect_area_pi
             app.Label2.Text = string(length(numerated_defects_list));
         end
 ```
+After the "Calculate boundaries"-button has been pressed, an image with plotted defects and their numbers appears:
+
+<p align="center">
+<img src="images/calc_1.png" width="400">
+  <img src="images/calculated.png" width="400">
+  </p>
+<figcaption align = "center"> 
+  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+</figcaption>
+
