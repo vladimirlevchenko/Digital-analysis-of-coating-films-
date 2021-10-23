@@ -156,9 +156,9 @@ example 2
 Boundaries calculations
 When the defects are represented as BW image, we can draw the borders on the interface between white and black pixels. That would give us coordinates of each boundary associated with defects, which then could be converted to the area. The calculated area of each defect would then be divided on the area of the whole drawdown (or the selected region of interest), stored in the list as pixel and percentage area. The sum of area of each individual defect would give us then a total defectiveness of the drawdown, in percentage.
 
-![\Large x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}](https://latex.codecogs.com/svg.latex?\Large&space;x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}) 
+Single defect, % = defect's area (pix^2) / total area * 100
 
-These are so called boundaries are generated using *bwboundaries* function. 
+So the first thing that has to be done is to calculate the area of the whole drawdown or the selected region. This is done using the *bwarea* function that calculates the area in the binary image (the "white" part in the BW image). But before we apply this function, we have to make sure that the defects are filled (in the BW image the defects are "black") and became "white". That would ensure that the defects are gone and the total area would be calculated as the "undefected" one.
 
 ```Matlab
 % Button pushed function: CalculateboundariesButton
