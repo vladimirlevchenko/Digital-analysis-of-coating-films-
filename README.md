@@ -160,6 +160,17 @@ Single defect, % = defect's area (pix^2) / total area * 100
 
 So the first thing that has to be done is to calculate the area of the whole drawdown or the selected region. This is done using the *bwarea* function that calculates the area in the binary image (the "white" part in the BW image). But before we apply this function, we have to make sure that the defects are filled (in the BW image the defects are "black") and became "white". That would ensure that the defects are gone and the total area would be calculated as the "undefected" one.
 
+defects_removal_2
+
+Example
+<p align="center">
+
+  <img src="images/defects_removal_2.png" width="300">
+  </p>
+<figcaption align = "center"> 
+  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+</figcaption>
+
 ```Matlab
 % Button pushed function: CalculateboundariesButton
         function CalculateboundariesButtonPushed(app, event)
