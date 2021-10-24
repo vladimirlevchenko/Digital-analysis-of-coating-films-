@@ -280,3 +280,113 @@ After the "Calculate boundaries"-button has been pressed, an image with plotted 
   <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
 
+All in all there was found 27 defects, which were numerated, areas calculated and plotted into the table. As it can be seem from the picture, the drawdown area was also recognized as a defect, which is obviously not the case. Its calculated area of almost 99.6 % contributed to the overall sum of defects which is above 100%. This means that we should exclude this "defect" from the defect list, update calculations and table, and plot the results again. 
+
+To do so, the button "Remove" was created with the following code:
+```Matlab
+ % Button pushed function: RemoveButton
+        function RemoveButtonPushed(app, event)
+            global selectedRow;
+            global numerated_defects_list;
+            global defect_area_perc_list;
+            global img_temp;
+            global new_B_list;
+            
+            numerated_defects_list(selectedRow) = [];
+            defect_area_perc_list(selectedRow) = [];
+            new_B_list(selectedRow) = [];
+      
+            if isequal(height(selectedRow), 1) 
+                    % If the height of event.Indices is one, it means a single row
+                    % is selected and we can remove it, if you want to
+                    % remove more rows, you can implement it easily
+                    
+                if selectedRow > height(app.UITable.Data) % When the last row is clicked and removed, subsequent 
+                   selectedRow = height(app.UITable.Data);  % removing will throw an error, remove last row instead
+                end
+                app.UITable.Data(selectedRow, :) = [];
+            end
+
+            defected_area_perc_excluded = sum(defect_area_perc_list);
+            % Display a calculated area
+            app.LabelArea.Text = string(round(defected_area_perc_excluded,2));
+
+            imshow(img_temp);
+            hold on
+            for i = 1:length(new_B_list);
+           % for i = numerated_defects_list;
+                boundary = new_B_list{i};
+                x = boundary(:, 2);     
+                y = boundary(:, 1);
+                plot(x, y, 'w', 'LineWidth', 3)
+                text(x(1), y(1), string(numerated_defects_list(i)), 'Color','r','FontSize',20);
+                i = i + 1;
+            end
+
+            % Update the number of defects label
+            app.Label2.Text = string(length(numerated_defects_list));
+        end
+```
+In order to remove a defect one can just click on any place in the raw of the defect to be removed and click the "Remove"-button. The values from the lists (areas in pixels and percentage) will be removed from the lists and plotted in the table. After the "reference" defect has been removed (the one corresponding to the whole drawdown area) the new values are updated are the total defected area is 0.84% with 23 defects. The interaction with table's content is achieved using the following callback code: 
+
+```Matlab
+% Cell selection callback: UITable
+        function UITableCellSelection(app, event)
+            global selectedRow;
+            selectedRow = event.Indices(1);
+        end
+```
+
+And the code for the "Remove"-button:
+
+```Matlab
+% Button pushed function: RemoveButton
+        function RemoveButtonPushed(app, event)
+            global selectedRow;
+            global numerated_defects_list;
+            global defect_area_perc_list;
+            global img_temp;
+            global new_B_list;
+            
+            numerated_defects_list(selectedRow) = [];
+            defect_area_perc_list(selectedRow) = [];
+            new_B_list(selectedRow) = [];
+      
+            if isequal(height(selectedRow), 1) 
+                    % If the height of event.Indices is one, it means a single row
+                    % is selected and we can remove it, if you want to
+                    % remove more rows, you can implement it easily
+                    
+                if selectedRow > height(app.UITable.Data) % When the last row is clicked and removed, subsequent 
+                   selectedRow = height(app.UITable.Data);  % removing will throw an error, remove last row instead
+                end
+                app.UITable.Data(selectedRow, :) = [];
+            end
+
+            defected_area_perc_excluded = sum(defect_area_perc_list);
+            % Display a calculated area
+            app.LabelArea.Text = string(round(defected_area_perc_excluded,2));
+
+            imshow(img_temp);
+            hold on
+            for i = 1:length(new_B_list);
+                boundary = new_B_list{i};
+                x = boundary(:, 2);     
+                y = boundary(:, 1);
+                plot(x, y, 'w', 'LineWidth', 3)
+                text(x(1), y(1), string(numerated_defects_list(i)), 'Color','r','FontSize',20);
+                i = i + 1;
+            end
+
+            % Update the number of defects label
+            app.Label2.Text = string(length(numerated_defects_list));
+        end
+ ```
+The defect list can be filtered after the defects area in pixels. This would remove the defects with areas below the threshold.
+
+## Supplementary functionality
+
+1. Remove noise button
+2. Filter defects areas
+3. Add defects manul button
+4. Export button
