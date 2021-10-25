@@ -384,6 +384,13 @@ And the code for the "Remove"-button:
  ```
 The defect list can be filtered after the defects area in pixels. This would remove the defects with areas below the threshold.
 
+<p align="center">
+<img src="images/results_2.gif" width="800">
+  </p>
+<figcaption align = "center"> 
+  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+</figcaption>
+
 ## Supplementary functionality
 
 1. Remove noise button
