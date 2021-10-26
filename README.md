@@ -395,5 +395,94 @@ The defect list can be filtered after the defects area in pixels. This would rem
 
 1. Remove noise button
 2. Filter defects areas
-3. Add defects manul button
-4. Export button
+In some cases, when the amount of defect is large, then it could be usefull to filter off the defects whith area lower than the treshold. The treshold is set manually in the label field. It is stored in the variable *low_area_limit* and passed to the if-loop when the "Calculate boundaries"-button has been pressed.
+
+```Matlab
+ % Value changed function: LowerarealimitEditField
+        function LowerarealimitEditFieldValueChanged(app, event)
+            global low_area_limit;
+            low_area_limit = app.LowerarealimitEditField.Value;
+            % Clears the content of the table
+            app.UITable.Data = [];
+            app.CalculateboundariesButtonPushed
+        end
+```
+
+4. Add defects manul button
+
+```Matlab
+ % Button pushed function: AdddefectsSBButton
+        function AdddefectsSBButtonPushed(app, event)
+
+            global img_croped;
+            global img;
+            global img_cr_bw;
+            global indiv_area;
+            global values_B;
+            
+            defect_area_perc_list = [];
+            defect_area_pix_list = [];
+            numerated_defects_list = [];
+            defected_are_percentage = [];
+            app.UITable.Data = [];
+            added_crators_area = 0;
+   
+            figure, imshow(img_croped);
+            answer = questdlg('Select the drawdown area', ...
+	        'Add defect', ...
+	        'Ok','Done','Done');
+            hFH = drawpolygon('Color','g');
+            drawdown_pos = hFH.Position;
+            hold on
+            x = drawdown_pos(:, 1);
+            y = drawdown_pos(:, 2);
+            plot(x, y, 'w', 'LineWidth', 2);
+            drawdown_area_manual_pix = polyarea(x,y);
+            
+            % Handle response
+            switch answer
+                case 'Ok'
+                    k = 1;
+                    while true;
+                        message = sprintf('Select the defects.');
+                        uiwait(msgbox(message));
+                        hFH = drawpolygon('Color','b');
+                        defect_pos = hFH.Position;
+                        hold on
+                        x = defect_pos(:, 1);
+                        y = defect_pos(:, 2);
+                        plot(x, y, 'w', 'LineWidth', 2);
+                        defect_area_manual_pix = polyarea(x,y);
+
+                        defect_area_pix_list(end+1) = defect_area_manual_pix;
+                        defect_area_manual_perc = defect_area_manual_pix / drawdown_area_manual_pix * 100;
+                        defect_area_perc_list(end+1) = defect_area_manual_perc
+                        numerated_defects_list(end+1) = k
+                        k = k + 1
+
+                        answer = questdlg('Add more defects?', ...
+	                    'Add defects', ...
+	                    'Yes','No','No');
+
+                        switch answer
+                            case "No"
+                            %    new_defected_are_percentage = defected_are_percentage + added_crators_area;
+                                app.LabelArea.Text = string(sum(defect_area_perc_list));
+                                app.Label2.Text = string(length(numerated_defects_list));
+                                imshow(img_croped, "parent", app.UIAxes2);
+                                app.UITable.ColumnName = {'Number', 'Area, PIX','Area, %'}
+                                app.UITable.ColumnWidth = {'auto'};
+                                app.UITable.FontSize = 10;
+                                for k = 1:length(numerated_defects_list);
+                                    app.UITable.Data = [app.UITable.Data; numerated_defects_list(k), defect_area_pix_list(k), defect_area_perc_list(k)];
+                                end
+                                break
+                            case "Yes"
+                        end
+                    end
+                case 'No'
+                    imshow(img_croped, "parent", app.UIAxes2);
+            end 
+```
+
+6. Export button
