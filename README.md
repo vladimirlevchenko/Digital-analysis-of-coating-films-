@@ -22,6 +22,15 @@ Flow, wetting, crators
 The algorith for the analysis is based on image processing techniques. Because the defects on SB and WB plates are presented differently (WB - readily visible crators; SB - marked regions), we should take into account when setting up the algorithm.
 
 <p align="center">
+<img src="images/solvent_borne_example.jpeg" width="300">
+<img src="images/water_borne_example.jpeg" width="300">
+  </p>
+<figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
+</figcaption>
+
+text here
+
+<p align="center">
 <img src="images/algorithm.png" width="400">
   </p>
 <figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
