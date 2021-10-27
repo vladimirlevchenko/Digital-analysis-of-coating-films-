@@ -2,9 +2,9 @@
 This repository is created to introduce the digital solution to the drawdown analysis in paint industry.
 Explanation to the attached files:
 
-**waterborne_app_V12.mlapp** - main application file written in MatLab; 
+**drawdown_analyzer_app_V12.mlapp** - main application file written in MatLab; 
 
-**drawdown_analyzer_MatLab_SCRIPT.m** - the copied content of the **waterborne_app_V12.mlapp**-file into a standard MatLab .m script file. The code is not executable when attempted to run in MatLab. It was made only to illustrate what is inside in the **waterborne_app_V12.mlapp**-file.  
+**drawdown_analyzer_script.m** - the copied content of the **drawdown_analyzer_app_V12.mlapp**-file into a standard MatLab .m script file. The code is not executable when attempted to run in MatLab. It was made only to illustrate what is inside in the **drawdown_analyzer_app_V12.mlapp**-file.  
 
 The application was sritten in MatLab and converted to a standalone desktop app using MatLab compiler. 
 
