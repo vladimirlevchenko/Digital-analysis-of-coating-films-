@@ -19,16 +19,15 @@ Flow, wetting, crators
 
 ## Algorithm
 
-The algorith for the analysis is based on image processing techniques. Because the defects on SB and WB plates are presented differently (WB - readily visible crators; SB - marked regions), we should take into account when setting up the algorithm.
+The algorith for the analysis is based on image processing techniques. Because the defects on SB and WB plates are presented differently (WB - readily visible crators; SB - marked regions), we should take into account when setting up the algorithm. The idea behind the code was to make a black-and-white (BW) representation of the image followed by boundaries creation on top of the BW image. Also to keep count of numbers of the boundaries and store the calculated areas. This is illustrated in the figure below: 
 
 <p align="center">
-<img src="images/solvent_borne_example.jpeg" width="300">
-<img src="images/water_borne_example.jpeg" width="300">
+<img src="images/Picture1.png" width="800">
   </p>
 <figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
 
-text here
+Some additional techniques, such as noise removal, contrast adjust, plotting data in the table etc., were necessary to be implemented as they would improve the overall quality of image and deliver reliable results. The workflow is demonstrated in the chart below:
 
 <p align="center">
 <img src="images/algorithm.png" width="400">
@@ -36,10 +35,7 @@ text here
 <figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
 
-WB - two colored charts
-SB - circle the defects using a marker.
-
-(figure of the marked SB drawdown)
+As it was shown in Fig. 1, the SB drawdown image typically has already marked regions that were considered defective. These marks would be used to make boundaries for the area calculation. Unlike the SB drawdown, the WB one has clearly visible crators and defects, so there is no need to manually mark them.
 
 ## App
 
@@ -56,7 +52,7 @@ The app's interface:
 To upload the image, one has to click on the image UI component. Three empty arrays, which are going to be used later on, are initilized. It is not critical to initialize them at this stage, but I wanted to make sure that I would not forget to do it later. When the image is uploaded, it appears in the same UI image icon that you clicked on.
 
 ```Matlab
-% Image clicked function: Image
+ % Image clicked function: Image
         function ImageClicked(app, event)
             global img;
             global defect_area_perc_list;
@@ -75,12 +71,11 @@ To upload the image, one has to click on the image UI component. Three empty arr
                 app.Image.ImageSource = img;
             end
         end
-
 ```
 To switch between different algorithms (and parameters) for SB and WB drawdowns, I added a app.ButtonGroup. It reads up a type of used formulation (solvent-borne or water-borne) and stores it under the variable "buttonText". 
 
 ```Matlab
-% Selection changed function: FormulationButtonGroup
+  % Selection changed function: FormulationButtonGroup
         function FormulationButtonGroupSelectionChanged(app, event)
             global buttonText;
             selectedButton = app.FormulationButtonGroup.SelectedObject;
@@ -91,11 +86,12 @@ To switch between different algorithms (and parameters) for SB and WB drawdowns,
 It is seldomly the whole uploaded picture that is going to be analyzed. In most cases, it is only a specific region that is of interest. The "Select region"-button was introduced so that user could select the region of interest (ROI) him/herself. ROI was selected using a *drawrectangle* function. After the rectangle has been placed, it's position was readed and the uploaded image was then croped with the constrains that the ROI implied.  
 
 ```Matlab
-% Button pushed function: SelectregionButton
+ % Button pushed function: SelectregionButton
         function SelectregionButtonPushed(app, event)
             global img;
             global img_croped;
             global low_area_limit;
+            global img_gray;
 
             figure, imshow(img);
             % Clears the content of the table
@@ -111,12 +107,13 @@ It is seldomly the whole uploaded picture that is going to be analyzed. In most 
                 end
 
              if isequal(low_area_limit, true);
-                 disp("PUESHED")
-
+                 disp("PUSHED")
              else
                  disp('NOT pushed')
                  low_area_limit = 1;
              end
+             img_gray = rgb2gray(img_croped);
+        end
 ```
 
 To further analyze the croped region form the previous step, it has to be converted to the black-and-white (BW) image. Here I though to take down two flies on one smack - convert ot BW, smooth the edges of the defects and filter off the noisy pixels. Since the selected region is still a RGB image, it must be converted to the gray-scale image using an *rgb2gray* function. The contrast of the gray-scale image was enhanced by means of *adapthisteq* and *imadjust* functions. 
@@ -132,24 +129,26 @@ The convertation to the BW image is fairly simple and was achieved by threshhold
 Function *bwareaopen* smoothes the edges around the defects so they do not look sharp. The rest of the code plots the BW figure into the UIAxis. 
 
 ```Matlab
-% Value changing function: BWfilterSlider
+ % Value changing function: BWfilterSlider
         function BWfilterSliderValueChanging(app, event)
             global changingValue;
             global img_croped;
             global img_cr_bw;
+            global img_gray;
             
-          % Reads up the value from the slider
+            % Reads up the value from the slider
             changingValue = event.Value;
-            img_gray = rgb2gray(img_croped);
-            claheI = adapthisteq(img_gray,'ClipLimit',0.01);
-            claheI = imadjust(claheI);
-
-            img_cr_bw = claheI > changingValue; % change this number to change the sensitivity
-            se = strel('disk', 4); % change to change the sensitivity
-            img_cr_bw = imopen(img_cr_bw, se);
+            % Gray-scale image contrast enhancement
+            contrast_enhanced = adapthisteq(img_gray,'ClipLimit',0.01);
+            contrast_enhanced = imadjust(contrast_enhanced);
+            % Setting up the threshold value for the BW image generation
+            img_cr_bw = contrast_enhanced > changingValue;
+            % Smoothing the edges
+            sens = strel('disk', 4); 
+            img_cr_bw = imopen(img_cr_bw, sens);
             % Noise removal
             img_cr_bw = bwareaopen(img_cr_bw, 60);  
-            imshow(img_cr_bw, "parent", app.UIAxes_ROI);
+            imshow(img_cr_bw, "parent", app.UIAxes_ROI); 
         end
 ```
 Example
@@ -188,7 +187,7 @@ Finally, values from three created lists (numerated_defects_list, defect_area_pi
 The complete code for the "Calculate"-button is attached below.
 
 ```Matlab
-% Button pushed function: CalculateboundariesButton
+ % Button pushed function: CalculateboundariesButton
         function CalculateboundariesButtonPushed(app, event)
             global img_cr_bw;
             global k_numbers_list;  
@@ -208,14 +207,14 @@ The complete code for the "Calculate"-button is attached below.
             disp(low_area_limit)
             % Calculate the area of the whole drawdown. The defects are
             % filled.
-            se = strel("disk", 50);
-            bw_4area = imclose(img_cr_bw, se);
+            sens = strel("disk", 50);
+            bw_4area = imclose(img_cr_bw, sens);
             figure, imshow(bw_4area);
             drawdown_area = bwarea(bw_4area);
-     %       figure, imshow(img_cr_bw);
 
             % Boundaries calculation
             disp(buttonText)
+            % Algorithm selection based on the type of the drawdown
             if isequal(buttonText, 'water-borne');
                 formulation = 'holes'
             else
@@ -291,51 +290,6 @@ After the "Calculate boundaries"-button has been pressed, an image with plotted 
 
 All in all there was found 27 defects, which were numerated, areas calculated and plotted into the table. As it can be seem from the picture, the drawdown area was also recognized as a defect, which is obviously not the case. Its calculated area of almost 99.6 % contributed to the overall sum of defects which is above 100%. This means that we should exclude this "defect" from the defect list, update calculations and table, and plot the results again. 
 
-To do so, the button "Remove" was created with the following code:
-```Matlab
- % Button pushed function: RemoveButton
-        function RemoveButtonPushed(app, event)
-            global selectedRow;
-            global numerated_defects_list;
-            global defect_area_perc_list;
-            global img_temp;
-            global new_B_list;
-            
-            numerated_defects_list(selectedRow) = [];
-            defect_area_perc_list(selectedRow) = [];
-            new_B_list(selectedRow) = [];
-      
-            if isequal(height(selectedRow), 1) 
-                    % If the height of event.Indices is one, it means a single row
-                    % is selected and we can remove it, if you want to
-                    % remove more rows, you can implement it easily
-                    
-                if selectedRow > height(app.UITable.Data) % When the last row is clicked and removed, subsequent 
-                   selectedRow = height(app.UITable.Data);  % removing will throw an error, remove last row instead
-                end
-                app.UITable.Data(selectedRow, :) = [];
-            end
-
-            defected_area_perc_excluded = sum(defect_area_perc_list);
-            % Display a calculated area
-            app.LabelArea.Text = string(round(defected_area_perc_excluded,2));
-
-            imshow(img_temp);
-            hold on
-            for i = 1:length(new_B_list);
-           % for i = numerated_defects_list;
-                boundary = new_B_list{i};
-                x = boundary(:, 2);     
-                y = boundary(:, 1);
-                plot(x, y, 'w', 'LineWidth', 3)
-                text(x(1), y(1), string(numerated_defects_list(i)), 'Color','r','FontSize',20);
-                i = i + 1;
-            end
-
-            % Update the number of defects label
-            app.Label2.Text = string(length(numerated_defects_list));
-        end
-```
 In order to remove a defect one can just click on any place in the raw of the defect to be removed and click the "Remove"-button. The values from the lists (areas in pixels and percentage) will be removed from the lists and plotted in the table. After the "reference" defect has been removed (the one corresponding to the whole drawdown area) the new values are updated are the total defected area is 0.84% with 23 defects. The interaction with table's content is achieved using the following callback code: 
 
 ```Matlab
@@ -349,7 +303,7 @@ In order to remove a defect one can just click on any place in the raw of the de
 And the code for the "Remove"-button:
 
 ```Matlab
-% Button pushed function: RemoveButton
+ % Button pushed function: RemoveButton
         function RemoveButtonPushed(app, event)
             global selectedRow;
             global numerated_defects_list;
@@ -360,12 +314,9 @@ And the code for the "Remove"-button:
             numerated_defects_list(selectedRow) = [];
             defect_area_perc_list(selectedRow) = [];
             new_B_list(selectedRow) = [];
-      
+            % Row removal. Indices is one, it means a single row is 
+            % selected and we can remove it.
             if isequal(height(selectedRow), 1) 
-                    % If the height of event.Indices is one, it means a single row
-                    % is selected and we can remove it, if you want to
-                    % remove more rows, you can implement it easily
-                    
                 if selectedRow > height(app.UITable.Data) % When the last row is clicked and removed, subsequent 
                    selectedRow = height(app.UITable.Data);  % removing will throw an error, remove last row instead
                 end
