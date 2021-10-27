@@ -6,8 +6,8 @@ This repository is created to introduce the digital solution to the drawdown ana
 When new paint or formulation is developed, it's properties have to be thoroughly investigated before the product ends up on the shop's shelf or customer's wall. One of the methods to assess the properties of the paint is called drawdown analysis. Now, depending on type of solvent that paint includes, one can find two types of paints - solvent-borne and water-borne. 
 
 <p align="center">
-<img src="images/solvent_borne_example.jpeg" width="400">
-<img src="images/water_borne_example.jpeg" width="400">
+<img src="images/solvent_borne_example.jpeg" width="300">
+<img src="images/water_borne_example.jpeg" width="300">
   </p>
 <figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
 </figcaption>
@@ -393,8 +393,89 @@ The defect list can be filtered after the defects area in pixels. This would rem
 
 ## Supplementary functionality
 
-1. Remove noise button
-2. Filter defects areas
+### Remove the undesired noise/areas
+
+Sometimes, the software draws the boundaries around the objects that are not relevant for the analysis. It could also be that the light environment was not perfect and some parts of the image are overexposed. In all these cases, it could be complicated to achieve a good contrast when obtaining the BW-image. For these cases, a "Remove noise"-button can be used. This button allows to place black rectangles on the image part that is hard to adjust or undesirable in the analysis.
+```Matlab
+ % Button pushed function: RemovenoiseButton
+        function RemovenoiseButtonPushed(app, event)
+
+            global img_croped;
+            global img_cr_bw;
+            global changingValue;
+            global img_gray;
+ 
+            app.UITable.Data = [];
+
+            % Display the selected region and selec the region to mask
+            imshow(img_cr_bw);
+            message = sprintf('Left click and hold to begin drawing.\nSimply lift the mouse button to finish');
+            uiwait(msgbox(message));
+            
+            hFH = drawrectangle();
+            % Create a binary image ("mask") from the ROI object.
+            binaryImage = hFH.createMask();
+            
+            % This part puts the black drawn square on the cropped BW image
+            % Convert from RGB to gray.
+            rgbImage = rgb2gray(img_croped);
+      
+            redChannel = rgbImage(:, :, 1);
+            greenChannel = rgbImage(:, :, 1);
+            blueChannel = rgbImage(:, :, 1);
+            desiredColor = [0, 0, 0];
+            redChannel(binaryImage) = desiredColor(1);
+            greenChannel(binaryImage) = desiredColor(2);
+            blueChannel(binaryImage) = desiredColor(3);
+            rgbImage = cat(3, redChannel, greenChannel, blueChannel);
+            img_gray = rgb2gray(rgbImage);
+            img_cr_bw = im2bw(img_gray);
+            imshow(img_cr_bw, "parent", app.UIAxes_ROI);
+       
+            answer = questdlg('Remove more?', ...
+	        'Remover', ...
+	        'Yes','No','No');
+            
+            % Handle response
+            switch answer
+                case 'Yes'
+                    while true;
+                        message = sprintf('Left click and hold to begin drawing.\nSimply lift the mouse button to finish');
+                        uiwait(msgbox(message));
+                        hFH = drawrectangle(); % imfreehand
+                        % Create a binary image ("mask") from the ROI object.
+                        binaryImage = hFH.createMask();
+
+                        redChannel = rgbImage(:, :, 1);
+                        greenChannel = rgbImage(:, :, 1);
+                        blueChannel = rgbImage(:, :, 1);
+                        desiredColor = [0, 0, 0];
+                        redChannel(binaryImage) = desiredColor(1);
+                        greenChannel(binaryImage) = desiredColor(2);
+                        blueChannel(binaryImage) = desiredColor(3);
+                        rgbImage = cat(3, redChannel, greenChannel, blueChannel);
+                        img_gray = rgb2gray(rgbImage);
+             
+                        figure, imshow(img_gray); 
+                   
+                        close(1);
+                        answer = questdlg('Remove more?', ...
+	                    'Remover', ...
+	                    'Yes','No','No');
+                        switch answer
+                            case "No"
+                                imshow(img_gray, "parent", app.UIAxes_ROI);
+                                break
+                            case "Yes"
+                        end
+                    end
+                case 'No'
+                    imshow(img_gray, "parent", app.UIAxes_ROI);    
+            end
+        end
+```
+### Filter the defects' areas
+
 In some cases, when the amount of defect is large, then it could be usefull to filter off the defects whith area lower than the treshold. The treshold is set manually in the label field. It is stored in the variable *low_area_limit* and passed to the if-loop when the "Calculate boundaries"-button has been pressed.
 
 ```Matlab
@@ -408,13 +489,13 @@ In some cases, when the amount of defect is large, then it could be usefull to f
         end
 ```
 
-4. Add defects manul button
+### Manual addition of the defected area.
+
+In cases where the above mentioned aglorithm fails to recognize the defect, it could be usefull to manually sircle the defected area. Directly on the image. This is demonstrated in the figure below. First, the total area of the drawdonw (or the region of interest) should be chosen. Then, the defects can be circled manually by drawing the rectangles on the image.
+The table will be updated with the newly highlighted defects and their corresponding areas.
 
 ```Matlab
- % Button pushed function: AdddefectsSBButton
-        function AdddefectsSBButtonPushed(app, event)
-
-            global img_croped;
+  global img_croped;
             global img;
             global img_cr_bw;
             global indiv_area;
@@ -466,7 +547,6 @@ In some cases, when the amount of defect is large, then it could be usefull to f
 
                         switch answer
                             case "No"
-                            %    new_defected_are_percentage = defected_are_percentage + added_crators_area;
                                 app.LabelArea.Text = string(sum(defect_area_perc_list));
                                 app.Label2.Text = string(length(numerated_defects_list));
                                 imshow(img_croped, "parent", app.UIAxes2);
@@ -483,6 +563,24 @@ In some cases, when the amount of defect is large, then it could be usefull to f
                 case 'No'
                     imshow(img_croped, "parent", app.UIAxes2);
             end 
+        end
 ```
+### Export to Excel
 
-6. Export button
+Finally, tha data from the table can be exported to a .txt or Excel file by clicking on the "Export"-button.
+```Matlab
+   % Button pushed function: ExportButton
+        function ExportButtonPushed(app, event)
+            global img_cr_bw;
+            global numerated_defects_list;
+            headers = {'Number','Area (pixels)','Area (%)'}
+            [filename,pathname]= uiputfile('*.xls','Save as');
+         
+            tableData = app.UITable.Data;
+            eXcelTable = [headers; num2cell(tableData)];
+            place_to_save = string(pathname) + string(filename)
+    
+            newTable = table({'a', 'b' , 10})
+            writecell(eXcelTable, place_to_save);
+        end
+```
