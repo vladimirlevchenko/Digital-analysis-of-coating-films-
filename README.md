@@ -2,11 +2,13 @@
 This repository is created to introduce the digital solution to the drawdown analysis in paint industry.
 Explanation to the attached files:
 
-**waterborne_app_V12.mlapp** - application written in MatLab; 
+**waterborne_app_V12.mlapp** - main application file written in MatLab; 
 
 **drawdown_analyzer_MatLab_SCRIPT.m** - the copied content of the **waterborne_app_V12.mlapp**-file into a standard MatLab .m script file. The code is not executable when attempted to run in MatLab. It was made only to illustrate what is inside in the **waterborne_app_V12.mlapp**-file.  
 
-## Introduction
+The application was sritten in MatLab and converted to a standalone desktop app using MatLab compiler. 
+
+## Background
 
 When new paint or formulation is developed, it's properties have to be thoroughly investigated before the product ends up on the shop's shelf or customer's wall. One of the methods to assess the properties of the paint is called drawdown analysis. Now, depending on type of solvent that paint includes, one can find two types of paints - solvent-borne and water-borne. 
 
