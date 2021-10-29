@@ -4,59 +4,52 @@ Explanation to the attached files:
 
 **drawdown_analyzer_app_V12.mlapp** - main application file written in MatLab; 
 
-**drawdown_analyzer_script.m** - copied content of the **drawdown_analyzer_app_V12.mlapp**-file into a standard MatLab .m script file. The code is not executable when attempted to run in MatLab. It was made only to illustrate what is inside in the **drawdown_analyzer_app_V12.mlapp**-file.  
+**drawdown_analyzer_script.m** - an application code saved in a readable format, so that it can be opened using GitHub.
 
 The application was sritten in MatLab and converted to a standalone desktop app using MatLab compiler. 
 
 ## Background
 
-When new paint or formulation is developed, it's properties have to be thoroughly investigated before the product ends up on the shop's shelf or customer's wall. One of the methods to assess the properties of the paint is called drawdown analysis. Now, depending on type of solvent that paint includes, one can find two types of paints - solvent-borne and water-borne. 
+When new paint or formulation is developed, its properties have to be thoroughly investigated before the product ends up on the shop's shelf or the customer's wall. One of the methods to assess the properties of the paint is called drawdown analysis. Depending on the type of solvent that paint includes, one can find two types of paints - solvent-borne and water-borne (**Fig. 1**). 
 
 <p align="center">
 <img src="images/solvent_borne_example.jpeg" width="300">
 <img src="images/water_borne_example.jpeg" width="300">
   </p>
-<figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
+<figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns.</b>
 </figcaption>
 
-
-The water- and solvent-borne (WB and SB for simplicity) drawdowns are prepared on different substrates - paper charts or glass plates for WB and metallic plates for SB. Such differences also affect the film appearance. For WB drawdowns, it is fairly straighforward to see crators, flow and levelling defects and other surface defects. For the SB drawdowns, one has to carefully analyze the film's surface... 
-
-Flow, wetting, crators 
+The water- and solvent-borne (WB and SB for simplicity) drawdowns are prepared on different substrates - paper charts or glass plates for WB and metallic plates for SB. Such differences also affect the film's appearance. For the WB drawdowns, it is fairly straightforward to see craters, flow and leveling defects, and other surface defects. For the SB drawdowns, one has to carefully analyze the film's surface organoleptically and then mark the defected regions with a pen. The results of the analysis consist of a number of craters (or defects) and the defected area, i.e. how much of the drawdown's area is covered by defects. The **goal** of this project is to digitalize the tedious process of the defect count and achieve an accurate evaluation of the defected area.  
 
 ## Algorithm
 
-The algorith for the analysis is based on image processing techniques. Because the defects on SB and WB plates are presented differently (WB - readily visible crators; SB - marked regions), we should take into account when setting up the algorithm. The idea behind the code was to make a black-and-white (BW) representation of the image followed by boundaries creation on top of the BW image. Also to keep count of numbers of the boundaries and store the calculated areas. This is illustrated in the figure below: 
+The algorithm for the analysis is based on image processing techniques. Because the defects on SB and WB plates are presented differently (WB - readily visible craters; SB - marked regions), we should take these differences into account when setting up the algorithm. The idea behind the code was to make a black-and-white (BW) representation of the image followed by boundaries creation on top of the BW image. Also to keep count of numbers of the boundaries and store the calculated areas. This is illustrated in the figure below: 
 
 <p align="center">
 <img src="images/Picture1.png" width="800">
   </p>
-<figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
-</figcaption>
 
 Some additional techniques, such as noise removal, contrast adjust, plotting data in the table etc., were necessary to be implemented as they would improve the overall quality of image and deliver reliable results. The workflow is demonstrated in the chart below:
 
 <p align="center">
 <img src="images/algorithm.png" width="400">
   </p>
-<figcaption align = "center"><b>Fig.1 Example of the solvent- and water-borne drawdowns</b>
-</figcaption>
 
-As it was shown in Fig. 1, the SB drawdown image typically has already marked regions that were considered defective. These marks would be used to make boundaries for the area calculation. Unlike the SB drawdown, the WB one has clearly visible crators and defects, so there is no need to manually mark them.
+As it is depicted in **Fig. 1**, the SB drawdown image typically has already marked regions that were considered defective. These marks would be used to make boundaries for the area calculation. Unlike the SB drawdown, the WB one has visible craters and defects, so there is no need to manually mark them.
 
-## App
+## Application's GUI
 
-The app's interface:
+The app's interface is demonstrated in **Fig. 2**.
 <p align="center">
 <img src="images/app_interface.png" width="400">
   </p>
 <figcaption align = "center"> 
-  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+  <b>Fig.2 Application's interface.</b>
 </figcaption>
 
 ## Code
 
-To upload the image, one has to click on the image UI component. Three empty arrays, which are going to be used later on, are initilized. It is not critical to initialize them at this stage, but I wanted to make sure that I would not forget to do it later. When the image is uploaded, it appears in the same UI image icon that you clicked on.
+To upload the image, one has to click on the image UI component. Three empty arrays, which are going to be used later on, are initialized. It is not critical to initialize them at this stage, but I wanted to make sure that I would not forget to do it later. When the image is uploaded, it appears in the same UI image icon that you clicked on.
 
 ```Matlab
  % Image clicked function: Image
@@ -79,7 +72,7 @@ To upload the image, one has to click on the image UI component. Three empty arr
             end
         end
 ```
-To switch between different algorithms (and parameters) for SB and WB drawdowns, I added a app.ButtonGroup. It reads up a type of used formulation (solvent-borne or water-borne) and stores it under the variable "buttonText". 
+To switch between different algorithms (and parameters) for SB and WB drawdowns, I have added an app.ButtonGroup. It reads up a type of used formulation (solvent-borne or water-borne) and stores it under the variable "buttonText". 
 
 ```Matlab
   % Selection changed function: FormulationButtonGroup
@@ -90,7 +83,7 @@ To switch between different algorithms (and parameters) for SB and WB drawdowns,
         end
 ```
 
-It is seldomly the whole uploaded picture that is going to be analyzed. In most cases, it is only a specific region that is of interest. The "Select region"-button was introduced so that user could select the region of interest (ROI) him/herself. ROI was selected using a *drawrectangle* function. After the rectangle has been placed, it's position was readed and the uploaded image was then croped with the constrains that the ROI implied.  
+It is seldomly the whole uploaded picture that is going to be analyzed. In most cases, it is only a specific region that is of interest. The "Select region"-button was introduced so that the user could select the region of interest (ROI) him/herself. ROI was selected using a *drawrectangle* function. After the rectangle has been placed, its position was read and the uploaded image was then cropped with the constraints that the ROI implied.  
 
 ```Matlab
  % Button pushed function: SelectregionButton
@@ -123,14 +116,14 @@ It is seldomly the whole uploaded picture that is going to be analyzed. In most 
         end
 ```
 
-To further analyze the croped region form the previous step, it has to be converted to the black-and-white (BW) image. Here I though to take down two flies on one smack - convert ot BW, smooth the edges of the defects and filter off the noisy pixels. Since the selected region is still a RGB image, it must be converted to the gray-scale image using an *rgb2gray* function. The contrast of the gray-scale image was enhanced by means of *adapthisteq* and *imadjust* functions. 
-The convertation to the BW image is fairly simple and was achieved by threshholding the intensity of the gray image using *changingValue*-variable. This variable was being read from the sliding bar. So by manually changing the sliding bar value, the "depth" of BW image can be scanned, revealing more or less defects depending on the needs.  
+To further analyze the cropped region from the previous step, it has to be converted to the black-and-white (BW) image. Here I thought to take down two flies on one smack - convert to the BW image, smooth the edges of the defects and filter off the noisy pixels. Since the selected region is still an RGB image, it must be converted to the gray-scale image using a *rgb2gray* function. The contrast of the gray-scale image was enhanced using *adapthisteq* and *imadjust* functions. 
+The convertation to the BW image is fairly simple and was achieved by thresholding the intensity of the gray image using the *changingValue*-variable. This variable was read from the sliding bar. So by manually changing the sliding bar value, the "depth" of the BW image can be scanned, revealing more or fewer defects depending on the needs. 
 
 <p align="center">
 <img src="images/GIF_BWslider.gif" width="600">
   </p>
 <figcaption align = "center"> 
-  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+  <b>Fig.3 Converting the rgb cropped image to the BW image. </b>
 </figcaption>
 
 Function *bwareaopen* smoothes the edges around the defects so they do not look sharp. The rest of the code plots the BW figure into the UIAxis. 
@@ -158,24 +151,13 @@ Function *bwareaopen* smoothes the edges around the defects so they do not look 
             imshow(img_cr_bw, "parent", app.UIAxes_ROI); 
         end
 ```
-Example
-<p align="center">
-<img src="images/BW_example.png" width="400">
-  </p>
-<figcaption align = "center"> 
-  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
-</figcaption>
 
-example 2
-
-Boundaries calculations
-When the defects are represented as BW image, we can draw the borders on the interface between white and black pixels. That would give us coordinates of each boundary associated with defects, which then could be converted to the area. The calculated area of each defect would then be divided on the area of the whole drawdown (or the selected region of interest), stored in the list as pixel and percentage area. The sum of area of each individual defect would give us then a total defectiveness of the drawdown, in percentage.
+When the defects are represented as a BW image, we can draw the borders on the interface between the white and black pixels. That would give us coordinates of each boundary associated with defects, which then could be converted to the area. The calculated area of each defect would then be divided on the area of the whole drawdown (or the selected region of interest), stored in the list as pixel and percentage area. The sum of the area of each defect would give us then a total defectiveness of the drawdown, in percentage:
 
 Single defect, % = defect's area (pix^2) / total area * 100
 
 So the first thing that has to be done is to calculate the area of the whole drawdown or the selected region. This is done using the *bwarea* function that calculates the area in the binary image (the "white" part in the BW image). But before we apply this function, we have to make sure that the defects are filled (in the BW image the defects are "black") and became "white". That would ensure that the defects are gone and the total area would be calculated as the "undefected" one. This is illustrated in the figures below:
 
-Example
 <p align="center">
 <kbd>
   <img src="images/defects_removal_1.png" width="300">
@@ -183,13 +165,14 @@ Example
 </kbd>
   </p>
 <figcaption align = "center"> 
-  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
+  <b>Fig.4 A BW region of intgerest with defects (left) and with "filled" defects (right) that is used for the area calculations. </b>
 </figcaption>
 
-To the left is a selected BW region that will be used for plotting the boundaries and to the right - the "non-defected" area, where the defects are filled with "white" pixels. The defects were filled using *strel* and *imclose* functions.
-The boundaries are traced using the *bwboundaries*-function, which takes in a BW image and outputs a list of found boundaries. The first for-loop creates lists of numbered defects (1,2,3...), boundaries (new_B_list), and areas in pixels and percentage. The second for-loop plots the boundaries with their corresponding numbers on the analyzed figure. There is a variable called *low_area_limit*, which is involved in the if-loop and will be discussed later.
 
-Finally, values from three created lists (numerated_defects_list, defect_area_pix_list, defect_area_perc_list) are used to create an UITable as well as update the text labels with the total sum of the defected area and number of defects.  
+To the left is a selected BW region that will be used for plotting the boundaries and to the right - the "non-defected" area, where the defects are filled with "white" pixels. The defects were filled using *strel* and *imclose* functions.
+The boundaries are traced using the *bwboundaries*-function, which takes in a BW image and outputs a list of found boundaries. The first for-loop creates lists of numbered defects (1,2,3...), boundaries (new_B_list), and areas in pixels and percentage. The second for-loop plots the boundaries with their corresponding numbers on the analyzed image. There is a variable called *low_area_limit*, which is involved in the if-loop and will be discussed later.
+
+Finally, the values from three created lists (numerated_defects_list, defect_area_pix_list, defect_area_perc_list) are used to create an UITable as well as update the text labels with the total sum of the defected area and number of defects.  
 
 The complete code for the "Calculate"-button is attached below.
 
@@ -291,13 +274,10 @@ After the "Calculate boundaries"-button has been pressed, an image with plotted 
 <img src="images/calc_1.png" width="400">
   <img src="images/calculated.png" width="400">
   </p>
-<figcaption align = "center"> 
-  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
-</figcaption>
 
-All in all there was found 27 defects, which were numerated, areas calculated and plotted into the table. As it can be seem from the picture, the drawdown area was also recognized as a defect, which is obviously not the case. Its calculated area of almost 99.6 % contributed to the overall sum of defects which is above 100%. This means that we should exclude this "defect" from the defect list, update calculations and table, and plot the results again. 
+All in all, there were found 27 defects, which were numerated, areas calculated, and plotted into the table. As can be seen from the picture, the drawdown area was also recognized as a defect, which does not make any sense. Its calculated area of almost 99.6 % contributed to the overall sum of defects which is above 100%. This means that we should exclude this "defect" from the defect list, update calculations and table, and plot the results again. 
 
-In order to remove a defect one can just click on any place in the raw of the defect to be removed and click the "Remove"-button. The values from the lists (areas in pixels and percentage) will be removed from the lists and plotted in the table. After the "reference" defect has been removed (the one corresponding to the whole drawdown area) the new values are updated are the total defected area is 0.84% with 23 defects. The interaction with table's content is achieved using the following callback code: 
+To remove a defect one can just click on any place in the raw of the defect to be removed and click the "Remove"-button. The values from the lists (areas in pixels and percentage) will be removed from the lists and plotted in the table. After the "reference" defect has been removed (the one corresponding to the whole drawdown area) the new values are updated are the total defected area is 0.84% with 23 defects. The interaction with the table's content is achieved using the following callback code: 
 
 ```Matlab
 % Cell selection callback: UITable
@@ -354,9 +334,7 @@ The defect list can be filtered after the defects area in pixels. This would rem
 <p align="center">
 <img src="images/results_2.gif" width="800">
   </p>
-<figcaption align = "center"> 
-  <b>Fig.2 Example of the solvent- and water-borne drawdowns</b>
-</figcaption>
+
 
 ## Supplementary functionality
 
