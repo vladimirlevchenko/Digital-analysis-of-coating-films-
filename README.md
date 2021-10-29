@@ -338,9 +338,10 @@ The defect list can be filtered after the defects area in pixels. This would rem
 
 ## Supplementary functionality
 
-### Remove the undesired noise/areas
+### Undesired noise/areas removal
 
-Sometimes, the software draws the boundaries around the objects that are not relevant for the analysis. It could also be that the light environment was not perfect and some parts of the image are overexposed. In all these cases, it could be complicated to achieve a good contrast when obtaining the BW-image. For these cases, a "Remove noise"-button can be used. This button allows to place black rectangles on the image part that is hard to adjust or undesirable in the analysis.
+Sometimes, the software draws the boundaries around the objects that are not relevant for the analysis. It could also be that the light environment was not perfect and some parts of the image are overexposed. In all these cases, it could be complicated to achieve a good contrast when obtaining the BW image. For these cases, a "Remove noise"-button can be used. This button allows placing black rectangles on the image part that is hard to adjust or undesirable in the analysis.
+
 ```Matlab
  % Button pushed function: RemovenoiseButton
         function RemovenoiseButtonPushed(app, event)
@@ -421,7 +422,7 @@ Sometimes, the software draws the boundaries around the objects that are not rel
 ```
 ### Filter the defects' areas
 
-In some cases, when the amount of defect is large, then it could be usefull to filter off the defects whith area lower than the treshold. The treshold is set manually in the label field. It is stored in the variable *low_area_limit* and passed to the if-loop when the "Calculate boundaries"-button has been pressed.
+In some cases, when the amount of defect is large, then it could be useful to filter off the defects with areas lower than the threshold. The threshold is set manually in the label field. It is stored in the variable *low_area_limit* and passed to the if-loop when the "Calculate boundaries"-button has been pressed.
 
 ```Matlab
  % Value changed function: LowerarealimitEditField
@@ -436,7 +437,7 @@ In some cases, when the amount of defect is large, then it could be usefull to f
 
 ### Manual addition of the defected area.
 
-In cases where the above mentioned aglorithm fails to recognize the defect, it could be usefull to manually sircle the defected area. Directly on the image. This is demonstrated in the figure below. First, the total area of the drawdonw (or the region of interest) should be chosen. Then, the defects can be circled manually by drawing the rectangles on the image.
+In cases where the above-mentioned algorithm fails to recognize the defect, it could be useful to manually circle the defected area. Directly on the image. This is demonstrated in the figure below. First, the total area of the drawdown (or the region of interest) should be chosen. Then, the defects can be circled manually by drawing the rectangles on the image.
 The table will be updated with the newly highlighted defects and their corresponding areas.
 
 ```Matlab
@@ -512,7 +513,8 @@ The table will be updated with the newly highlighted defects and their correspon
 ```
 ### Export to Excel
 
-Finally, tha data from the table can be exported to a .txt or Excel file by clicking on the "Export"-button.
+Finally, the data from the table can be exported to a .txt or Excel file by clicking on the "Export"-button.
+
 ```Matlab
    % Button pushed function: ExportButton
         function ExportButtonPushed(app, event)
