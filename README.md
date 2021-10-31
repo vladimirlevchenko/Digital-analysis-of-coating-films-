@@ -335,6 +335,11 @@ The defect list can be filtered after the defects area in pixels. This would rem
 <img src="images/results_2.gif" width="800">
   </p>
 
+The described approach works equally great both for water- and solvent-borne drawdowns: 
+<p align="center">
+<img src="images/SB_example.png" width="400">
+<img src="images/SB_example_2.png" width="400">
+  </p>
 
 ## Supplementary functionality
 
