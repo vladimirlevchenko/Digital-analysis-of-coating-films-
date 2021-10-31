@@ -41,7 +41,7 @@ As it is depicted in **Fig. 1**, the SB drawdown image typically has already mar
 
 The app's interface is demonstrated in **Fig. 2**.
 <p align="center">
-<img src="images/app_interface.png" width="400">
+<img src="images/apps?interface.png" width="400">
   </p>
 <figcaption align = "center"> 
   <b>Fig.2 Application's interface.</b>
